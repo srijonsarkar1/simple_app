@@ -1,4 +1,4 @@
-import os, warnings, sys, argparse, pandas as pd
+import os, warnings, sys, argparse, json, joblib, pandas as pd
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
@@ -49,6 +49,35 @@ def train_and_eval(config_path):
     print(f"RMSE : {rmse}")
     print(f"MAE : {mae}")
     print(f"R2 : {r2}")
+
+
+    ####
+
+    scores_file = config["reports"]["scores"]
+    params_file = config["reports"]["params"]
+
+    with open(scores_file, "w") as f:
+        scores = {
+            "rmse" : rmse,
+            "mae" : mae,
+            "R2" : r2
+        }
+        json.dump(scores, f, indent=4)
+    
+    with open(params_file, "w") as f:
+        params = {
+            "alpha" : alpha,
+            "l1_ratio" : l1_ratio
+        }
+        json.dump(params, f, indent=4)
+    
+    ####
+
+    os.makedirs(model_dir, exist_ok = True)
+    model_path = os.path.join(model_dir, "model.joblib")
+
+    joblib.dump(lr, model_path)
+    
 
 if __name__=='__main__':
     args = argparse.ArgumentParser()
