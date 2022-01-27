@@ -17,5 +17,3 @@ if __name__=='__main__':
     parsed_args = args.parse_args()
 
     load_and_save(config_path=parsed_args.config)
-    
-
